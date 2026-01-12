@@ -39,7 +39,6 @@ index = pc.Index(INDEX_NAME)
 try:
     nlp = spacy.load("en_core_web_md")
 except OSError:
-    # If model isn't installed, install it
     os.system("python3 -m spacy download en_core_web_md")
     nlp = spacy.load("en_core_web_md")
 
@@ -65,12 +64,14 @@ docs = [
     {
         "page_content": chunk["content"],
         "metadata": {
-            "title": chunk["title"],
-            "url": chunk["url"],
-            "chunk_index": chunk["chunk_index"]
+            "title": chunk.get("title", ""),
+            "url": chunk.get("url", ""),
+            "chunk_index": chunk.get("chunk_index", i),
+            "source": "Merck VM",          # <-- added source
+            "text": chunk["content"][:1000]  # <-- snippet for sanity tests
         }
     }
-    for chunk in dog_chunks
+    for i, chunk in enumerate(dog_chunks)
 ]
 
 # Compute embeddings for all chunks
@@ -87,12 +88,11 @@ vectors = [
 ]
 
 # ----------------------------
-# Upsert vectors into Pinecone
+# Upsert vectors into Pinecone in batches
 # ----------------------------
 BATCH_SIZE = 100
 for i in tqdm(range(0, len(vectors), BATCH_SIZE), desc="Uploading chunks"):
     batch = vectors[i:i + BATCH_SIZE]
-    index.upsert(batch)
+    index.upsert(vectors=batch)
 
-print("✅ All chunks uploaded to Pinecone using spaCy embeddings!")
-
+print("✅ All chunks uploaded to Pinecone with source and text snippet!")
