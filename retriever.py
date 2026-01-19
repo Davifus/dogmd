@@ -4,57 +4,49 @@ import requests
 from pinecone import Pinecone
 from dotenv import load_dotenv
 
-# -------------------------------
-# Load environment variables
-# -------------------------------
+
+#environment variables
 load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 INDEX_NAME = "dogvet-rag"
 
-# -------------------------------
-# LMStudio chat/completions endpoint
-# -------------------------------
-LMSTUDIO_URL = "http://192.168.68.70:1234/v1/chat/completions"
+
+#LMStudio chat/completions endpoint
+LMSTUDIO_URL = "http://192.168.68.70:1234/v1/chat/completions" #use your LMStudio server address
 
 def query_lmstudio_chat(messages, max_tokens=512, temperature=0.0):
     """
     Sends a chat message list to LMStudio and returns the generated text.
     """
     payload = {
-        "model": "your_model_name_here",  # replace with your LMStudio model
+        "model": "",  
         "messages": messages,
         "max_new_tokens": max_tokens,
         "temperature": temperature
     }
     response = requests.post(LMSTUDIO_URL, json=payload)
     response.raise_for_status()
-    # LMStudio chat completions follow OpenAI-style: choices[0].message.content
+    
     return response.json()["choices"][0]["message"]["content"]
 
-# -------------------------------
-# Initialize Pinecone
-# -------------------------------
+
+#Pinecone
 pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index(INDEX_NAME)
 
-# -------------------------------
-# Load spaCy model (prototyping embeddings)
-# -------------------------------
+
+#spaCy (prototyping embeddings)
 nlp = spacy.load("en_core_web_md")
 
-# -------------------------------
-# Get user query
-# -------------------------------
+#user input
 usertext = input("Enter your dog health question: ")
 
-# -------------------------------
-# Embed user query
-# -------------------------------
+
+#Embed user input
 embedding = nlp(usertext).vector.tolist()
 
-# -------------------------------
-# Query Pinecone
-# -------------------------------
+
+#Query Pinecone
 TOP_K = 5
 SCORE_THRESHOLD = 0.7
 
@@ -64,17 +56,14 @@ results = index.query(
     include_metadata=True
 )
 
-# -------------------------------
-# Filter results by score
-# -------------------------------
+
+#Filter results by score
 filtered_matches = [
     m for m in results["matches"]
     if m["score"] >= SCORE_THRESHOLD
 ]
 
-# -------------------------------
-# Prepare context for LMStudio
-# -------------------------------
+#context for LMStudio
 if not filtered_matches:
     print("No chunks met the similarity threshold. Try rephrasing your question.")
 else:
@@ -87,9 +76,7 @@ else:
 
     context = "\n\n".join(context_texts)
 
-    # -------------------------------
-    # Build chat messages
-    # -------------------------------
+    #Build chat messages
     messages = [
         {
             "role": "system",
@@ -105,9 +92,7 @@ else:
         }
     ]
 
-    # -------------------------------
-    # Query LMStudio chat/completions
-    # -------------------------------
+    #LMStudio chat
     answer = query_lmstudio_chat(messages)
     print("\n--- LLM Answer ---\n")
     print(answer)
