@@ -1,6 +1,17 @@
 # DogMD 🐶💊
 
-DogMD is a veterinary assistant tool that helps answer dog health questions using a combination of **retrieval-augmented generation (RAG)** with **Pinecone** and cloud-based LLMs via **OpenRouter**. It can retrieve relevant information from trusted sources like the **Merck Veterinary Manual** and answer user queries with source attribution.
+DogMD is a Retrieval-Augmented Generation (RAG) project designed to answer dog health questions using trusted veterinary sources. It combines a vector database with a cloud-based language model to provide context-aware answers with source attribution.
+
+The project workflow:
+
+User Query: Users ask a question about dog health.
+
+Vector Search: The query is converted into embeddings using spaCy and matched against a Pinecone vector database containing chunks of veterinary content.
+
+Contextual LLM Response: The relevant text chunks are passed to a cloud LLM via OpenRouter API, which generates a concise answer while citing sources.
+
+## Optional
+- ETL with Prefect: Automate ingestion of new veterinary content from sources like Merck Veterinary Manual, transforming and pushing it into Pinecone.
 
 ---
 
