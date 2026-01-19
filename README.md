@@ -1,4 +1,3 @@
-# dogmd
 # DogMD 🐶💊
 
 DogMD is a veterinary assistant tool that helps answer dog health questions using a combination of **retrieval-augmented generation (RAG)** with **Pinecone** and cloud-based LLMs via **OpenRouter**. It can retrieve relevant information from trusted sources like the **Merck Veterinary Manual** and answer user queries with source attribution.
