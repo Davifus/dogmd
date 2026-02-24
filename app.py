@@ -43,6 +43,11 @@ def query_openrouter(messages):
 def home():
     return render_template("index.html")
 
+#uptime monitoring endpoint :)
+@app.route("/health")
+def health():
+    return jsonify({"status": "ok"}), 200
+
 @app.route("/chat", methods=["POST"])
 def chat():
     user_message = request.json.get("message", "").strip()
