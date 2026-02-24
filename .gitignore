@@ -1,4 +1,16 @@
+# Environment variables (Keep your keys secret!)
 .env
 transforming/
 scrappingdata/
 notes/
+# Python temporary files
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# OS generated files
+.DS_Store
