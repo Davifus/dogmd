@@ -2,6 +2,11 @@
 
 DogMD is a Retrieval-Augmented Generation (RAG) project designed to answer dog health questions using trusted veterinary sources. It combines a vector database with a cloud-based language model to provide context-aware answers with source attribution.
 
+## 🌐 Live Demo
+
+Check out the live app here:  
+👉 [DogMD Website](https://dogmd.onrender.com/)
+## 
 The project workflow:
 
 User Query: Users ask a question about dog health.
